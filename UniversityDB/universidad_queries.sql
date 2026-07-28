@@ -135,6 +135,29 @@ JOIN profesor ON persona.id = profesor.id_profesor
 LEFT JOIN departamento ON profesor.id_departamento = departamento.id
 WHERE departamento.id IS NULL;
 
+-- ----------------------------------------------------------------------
+-- 12. Returns a list of departments that do not have associate teachers.
+-- -----------------------------------------------------------------------
+SELECT
+departamento.nombre AS 'Departamento'
+FROM departamento
+LEFT JOIN profesor ON departamento.id = profesor.id_departamento
+WHERE profesor.id_departamento IS NULL;
+
+-- -----------------------------------------------------------------
+-- 13. Returns a list with the teachers who do not teach any subject.
+-- -----------------------------------------------------------------
+SELECT
+persona.nombre AS 'Nombre',
+persona.apellido1 AS 'Apellido 1',
+persona.apellido2 AS 'Apellido 2'
+FROM persona
+JOIN profesor ON persona.id = profesor.id_profesor
+LEFT JOIN asignatura ON  profesor.id_profesor = asignatura.id_profesor
+WHERE asignatura.id_profesor IS NULL;
+
+
+
 
 
 
