@@ -106,13 +106,34 @@ WHERE
 curso_escolar.anyo_inicio = '2018' AND
 curso_escolar.anyo_fin = '2019'; 
 
+-- -----------------------------------------------------------------------
+-- 10. Returns a list with the names of all the teachers and departments 
+-- they have linked. Also returns teachers with no department linked
+-- -----------------------------------------------------------------------
+SELECT
+departamento.nombre AS 'Departamento',
+persona.apellido1 AS 'Apellido 1',
+persona.apellido2 AS 'Apellido 2',
+persona.nombre AS 'Nombre'
+FROM persona
+JOIN profesor ON persona.id = profesor.id_profesor
+LEFT JOIN departamento ON profesor.id_departamento = departamento.id
+ORDER BY 
+departamento.nombre, 
+persona.apellido1,
+persona.apellido2;
 
-
-
-
-
-
-
+-- -----------------------------------------------------------------------
+-- 11. Returns a list of teachers who are not associated with a department.
+-- -----------------------------------------------------------------------
+SELECT
+persona.apellido1 AS 'Apellido 1',
+persona.apellido2 AS 'Apellido 2',
+persona.nombre AS 'Nombre'
+FROM persona
+JOIN profesor ON persona.id = profesor.id_profesor
+LEFT JOIN departamento ON profesor.id_departamento = departamento.id
+WHERE departamento.id IS NULL;
 
 
 
