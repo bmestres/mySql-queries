@@ -343,7 +343,7 @@ WHERE nombre = 'Lenovo'
 
 -- --------------------------------------------------------------------------------
 -- 37. Returns all data of products that have the same price as the most expensive 
--- product of the manufacturer Lenovo. (No inner join).
+-- product of the manufacturer Lenovo. (No INNER JOIN).
 -- --------------------------------------------------------------------------------
 
 SELECT *
