@@ -358,6 +358,62 @@ WHERE nombre = 'Lenovo'
 )
 );
 
+-- -------------------------------------------------------------------------
+-- 38. List the name of the most expensive product from manufacturer Lenovo.
+-- -------------------------------------------------------------------------
+SELECT producto.nombre AS 'Producto',
+producto.precio AS 'Precio'
+FROM producto
+JOIN fabricante ON codigo_fabricante = fabricante.codigo
+WHERE fabricante.nombre = 'Lenovo'
+ORDER BY producto.precio DESC
+LIMIT 1;
+
+-- -----------------------------------------------------------
+-- 39. List the name of the cheapest product from manufacturer 
+-- Hewlett-Packard.
+-- -----------------------------------------------------------
+SELECT producto.nombre AS 'Producto',
+producto.precio AS 'Precio'
+FROM producto
+JOIN fabricante ON codigo_fabricante = fabricante.codigo
+WHERE fabricante.nombre = 'Lenovo'
+ORDER BY producto.precio ASC
+LIMIT 1;
+-- ---------------------------------------------------------------
+-- 40. Returns all products in the database that have a greater or 
+-- equal price to the most expensive product of the manufacturer 
+-- Lenovo.
+-- ---------------------------------------------------------------
+SELECT producto.nombre AS 'Producto'
+FROM producto
+WHERE precio >= (
+SELECT producto.precio
+FROM producto
+JOIN fabricante ON codigo_fabricante = fabricante.codigo
+WHERE fabricante.nombre = 'Lenovo'
+ORDER BY producto.precio ASC
+LIMIT 1
+);
+
+-- ------------------------------------------------------------
+-- 41. List all Asus products that have a higher price than the 
+-- average price of all their products.
+-- ------------------------------------------------------------
+SELECT AVG(precio) AS 'Average (€)'
+FROM producto
+WHERE producto.codigo_fabricante = (
+SELECT fabricante.codigo
+FROM fabricante
+WHERE fabricante.nombre = 'Asus'
+);
+
+
+
+
+
+
+
 
 
 
