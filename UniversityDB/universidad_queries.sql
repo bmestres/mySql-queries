@@ -4,9 +4,9 @@ USE universidad;
 -- alphabetically from minor to major by first surname, second surname and first name.
 -- ----------------------------------------------------------------------------------------------------------
 SELECT 
-apellido1 AS 'Apellido 1',
-apellido2 AS 'Apellido 2',
-nombre AS 'Nombre'
+apellido1,
+apellido2,
+nombre
 FROM persona;
 -- ----------------------------------------------------------------------------------------------------
 -- 2. Returns the name and two surnames of students who have not registered their phone number at the 

@@ -14,25 +14,27 @@ FROM producto;
 -- ----------------------------------------------
 -- 3. List all the columns of the product table.
 -- ----------------------------------------------
-SELECT *
+SELECT 
+producto.nombre,
+producto.precio
 FROM producto;
 -- -----------------------------------------------------------------
 -- 4. List the name of the products, the price in euros and the  
 -- price in american dollars with an exchange rate of 1€ = 1$.
 -- -----------------------------------------------------------------
 SELECT 
-producto.nombre AS Nombre,
-producto.precio AS 'Precio (€)',
-(producto.precio * 1) AS 'Precio ($)'
+producto.nombre,
+producto.precio AS 'precio_eur',
+(producto.precio * 1) AS 'precio_usd'
 FROM producto;
 -- -----------------------------------------------------------------
 -- 5. List the name of the products, the price in euros and the 
 -- price in dollars, with an exchange rate of 1 to 1.1 Euro to Dollar.
 -- ------------------------------------------------------------------
 SELECT 
-producto.nombre AS Nombre,
-producto.precio AS 'Precio (€)',
-ROUND((producto.precio * 1.1), 2) AS 'Precio ($)'
+producto.nombre AS 'nom del producte',
+producto.precio AS 'euros',
+ROUND((producto.precio * 1.1), 2) AS 'dòlars'
 FROM producto;
 -- -----------------------------------------------------------------
 -- 6. Lists the names and prices of all products in the 
@@ -40,7 +42,7 @@ FROM producto;
 -- -----------------------------------------------------------------
 SELECT 
 UPPER
-(producto.nombre) AS Producto,
+(producto.nombre),
 producto.precio
 FROM producto;
 -- -----------------------------------------------------------------
@@ -49,7 +51,7 @@ FROM producto;
 -- -----------------------------------------------------------------
 SELECT 
 LOWER
-(producto.nombre) AS Producto,
+(producto.nombre),
 producto.precio
 FROM producto;
 -- -----------------------------------------------------------------
@@ -57,14 +59,14 @@ FROM producto;
 -- another column capitalizes the first two characters of the 
 -- manufacturer's name.
 -- -----------------------------------------------------------------
-SELECT nombre AS Nombre,
-UPPER(LEFT(nombre, 2)) AS 'Initial'
+SELECT nombre,
+UPPER(LEFT(nombre, 2)) AS 'iniciales'
 FROM fabricante;
 -- -----------------------------------------------------------------
 -- 9. List product names and prices, rounding the price value.
 -- -----------------------------------------------------------------
-SELECT nombre as Nombre,
-ROUND(precio, 0) AS 'Precio redeado'
+SELECT nombre,
+ROUND(precio, 0)
 FROM producto;
 -- -----------------------------------------------------------------
 -- 10. Lists the names and prices of all products  in the product 
@@ -72,30 +74,31 @@ FROM producto;
 -- digits.
 -- -----------------------------------------------------------------
 SELECT nombre as Nombre,
-TRUNCATE(precio, 0) AS 'Precio truncado'
+TRUNCATE(precio, 0) AS 'precio truncado'
 FROM producto;
 -- -----------------------------------------------------------------
 -- 11. Displays a list of the manufacturer codes that appear in the 
 -- product table, including possible repetitions.
 -- -----------------------------------------------------------------
-SELECT codigo AS 'Código del fabricante'
-FROM producto;
+SELECT fabricante.codigo AS 'codigo_fabricante'
+FROM fabricante
+ORDER BY fabricante.codigo;
 -- -----------------------------------------------------------------
 -- 12. Lists the code of manufacturers who have products in the 
 -- product table, eliminating repeated codes.
 -- -----------------------------------------------------------------
-SELECT DISTINCT codigo AS 'Código del fabricante'
+SELECT DISTINCT codigo AS 'código_fabricante'
 FROM producto;
 -- --------------------------------------------------
 -- 13. List names of manufacturers in ascending order
 -- --------------------------------------------------
-SELECT nombre as 'Nombre del fabricante (↑)'
+SELECT nombre
 FROM fabricante
 ORDER BY nombre ASC;
 -- ---------------------------------------------------
 -- 13. List names of manufacturers in descending order
 -- ---------------------------------------------------
-SELECT nombre as 'Nombre del fabricante (↓)'
+SELECT nombre
 FROM fabricante
 ORDER BY nombre DESC;
 -- ------------------------------------------------------------
@@ -104,8 +107,8 @@ ORDER BY nombre DESC;
 -- order.
 -- ------------------------------------------------------------
 SELECT 
-nombre as 'Producto',
-precio as 'Precio'
+nombre
+precio
 FROM producto
 ORDER BY 
 nombre ASC, 
@@ -114,7 +117,9 @@ precio DESC;
 -- ------------------------------------------------------------------
 -- 16. Returns a list with the first 5 rows of the manufacturer table.
 -- ------------------------------------------------------------------
-SELECT *
+SELECT 
+fabricante.codigo,
+fabricante.nombre
 FROM fabricante
 LIMIT 5;
 -- -----------------------------------------------------------
@@ -122,14 +127,16 @@ LIMIT 5;
 -- manufacturer table. The fourth row must also be included in 
 -- the answer.
 -- -----------------------------------------------------------
-SELECT *
+SELECT
+fabricante.codigo,
+fabricante.nombre
 FROM fabricante
 LIMIT 3, 2;
 -- ---------------------------------------------------------------
 -- 18. List the name and price of the cheapest product. (Uses only 
 -- the ORDER BY and LIMIT clauses).
 -- --------------------------------------------------------------- 
-SELECT nombre AS 'Producto mas económico',
+SELECT nombre,
 precio
 FROM producto
 ORDER BY precio ASC
@@ -138,7 +145,7 @@ LIMIT 1;
 -- 19. List the name and price of the most expensive product. 
 -- (Uses only the ORDER BY and LIMIT clauses).
 -- ----------------------------------------------------------
-SELECT nombre AS 'Producto mas caro', 
+SELECT nombre
 precio
 FROM producto
 ORDER BY precio DESC
@@ -147,16 +154,16 @@ LIMIT 1;
 -- 20. List the name of all products of the manufacturer whose 
 -- manufacturer code is equal to 2.
 -- -----------------------------------------------------------
-SELECT nombre AS 'Productos Código 2'
+SELECT nombre
 FROM producto
 WHERE codigo_fabricante = 2;
 -- ------------------------------------------------------------------
 -- 21. Returns a list with the product name, price and manufacturer 
 -- name of all products in the database.
 -- ------------------------------------------------------------------
-SELECT producto.nombre AS 'Producto',
-precio AS 'Precio',
-fabricante.nombre AS 'Nombre fabricante'
+SELECT producto.nombre
+precio,
+fabricante.nombre AS 'nombre del fabricante'
 FROM producto
 JOIN fabricante ON producto.codigo_fabricante = fabricante.codigo;
 
@@ -165,23 +172,22 @@ JOIN fabricante ON producto.codigo_fabricante = fabricante.codigo;
 -- sorted alphabetically.
 -- ------------------------------------------------------------------
 SELECT 
-producto.nombre AS 'Producto',
-precio AS 'Precio',
-fabricante.nombre AS 'Fabricante'
+producto.nombre,
+producto.precio,
+fabricante.nombre AS 'nombre del fabricante'
 FROM producto
 JOIN fabricante ON codigo_fabricante = fabricante.codigo
 ORDER BY producto.nombre;
-
 -- --------------------------------------------------------------------
 -- 23. Returns a list with the product code, product name, manufacturer 
 -- code and manufacturer name (manager number), of all  products in 
 -- the database.
 -- --------------------------------------------------------------------
 SELECT 
-producto.codigo AS 'Código Producto',
-producto.nombre AS 'Nombre Producto',
-codigo_fabricante AS 'Código Fabricante',
-fabricante.nombre AS 'Nombre Fabricante'
+producto.codigo,
+producto.nombre,
+codigo_fabricante AS 'codigo fabricante',
+fabricante.nombre AS 'nombre fabricante'
 FROM producto
 JOIN fabricante ON codigo_fabricante = fabricante.codigo;
 
@@ -190,9 +196,9 @@ JOIN fabricante ON codigo_fabricante = fabricante.codigo;
 -- cheapest product.
 -- --------------------------------------------------------------
 SELECT
-p.nombre AS 'Producto',
-p.precio AS 'Precio',
-f.nombre AS 'Fabricante'
+p.nombre,
+p.precio,
+f.nombre AS 'fabricant'
 FROM producto p
 JOIN fabricante f ON codigo_fabricante = f.codigo
 ORDER BY precio ASC
@@ -203,9 +209,9 @@ LIMIT 1;
 -- the manufacturer, of the most expensive product.
 -- --------------------------------------------------------------
 SELECT
-p.nombre AS 'Producto',
-p.precio AS 'Precio',
-f.nombre AS 'Fabricante'
+p.nombre,
+p.precio,
+f.nombre AS 'fabricante'
 FROM producto p
 JOIN fabricante f ON codigo_fabricante = f.codigo
 ORDER BY precio DESC
@@ -216,8 +222,8 @@ LIMIT 1;
 -- del fabricant Lenovo.
 -- --------------------------------------------------------------
 SELECT
-p.nombre AS 'Producto',
-p.precio AS 'Precio'
+p.nombre,
+p.precio
 FROM producto p
 JOIN fabricante f ON codigo_fabricante = f.codigo
 WHERE f.nombre = 'Lenovo';
@@ -227,8 +233,8 @@ WHERE f.nombre = 'Lenovo';
 -- manufacturer Crucial that have a price greater than 200€
 -- --------------------------------------------------------------
 SELECT 
-nombre AS 'Producto',
-precio AS 'Precio'
+nombre,
+precio
 FROM producto
 WHERE precio > 200;
 
@@ -237,9 +243,9 @@ WHERE precio > 200;
 -- products from Asus, Hewlett-Packard and Seagate manufacturers. 
 -- ---------------------------------------------------------------
 SELECT 
-p.nombre AS 'Producto',
-p.precio AS 'Precio',
-f.nombre AS 'Fabricante'
+p.nombre,
+p.precio,
+f.nombre AS 'fabricante'
 FROM producto p
 JOIN fabricante f ON codigo_fabricante = f.codigo
 WHERE 
@@ -252,9 +258,9 @@ f.nombre = 'Seagate';
 -- using the IN operator.
 -- ---------------------------------------------------------------
 SELECT 
-p.nombre AS 'Producto',
-p.precio AS 'Precio',
-f.nombre AS 'Fabricante'
+p.nombre,
+p.precio,
+f.nombre AS 'fabricante'
 FROM producto p
 JOIN fabricante f ON codigo_fabricante = f.codigo
 WHERE 
@@ -265,9 +271,9 @@ f.nombre IN ('Asus', 'Hewlett-Packard', 'Seagate');
 -- of the products, where the manufacturer name ends in the letter 'e'.
 -- -------------------------------------------------------------------
 SELECT
-p.nombre AS 'Producto',
-p.precio AS 'Precio',
-f.nombre AS 'Fabricante'
+p.nombre,
+p.precio,
+f.nombre AS 'fabricante'
 FROM producto p
 JOIN fabricante f ON codigo_fabricante = f.codigo
 WHERE f.nombre LIKE '%e'; 
@@ -278,9 +284,9 @@ WHERE f.nombre LIKE '%e';
 -- their name.
 -- ---------------------------------------------------------------------
 SELECT
-p.nombre AS 'Producto',
-p.precio AS 'Precio',
-f.nombre
+p.nombre,
+p.precio,
+f.nombre AS 'fabricante'
 FROM producto p
 JOIN fabricante f ON codigo_fabricante = f.codigo
 WHERE f.nombre LIKE '%w%';
@@ -293,7 +299,8 @@ WHERE f.nombre LIKE '%w%';
 -- --------------------------------------------------------------------------------
 SELECT
 p.nombre,
-p.precio
+p.precio,
+f.nombre AS 'fabricante'
 FROM producto p
 JOIN fabricante f ON codigo_fabricante = f.codigo
 WHERE precio >= 180;
@@ -303,8 +310,8 @@ WHERE precio >= 180;
 -- manufacturers who have associated products in the database.
 -- ---------------------------------------------------------------------
 SELECT DISTINCT
-f.codigo AS 'Codigo',
-f.nombre AS 'Fabricante'
+f.codigo,
+f.nombre
 FROM producto
 JOIN fabricante f ON codigo_fabricante = f.codigo;
 
@@ -314,8 +321,8 @@ JOIN fabricante f ON codigo_fabricante = f.codigo;
 -- manufacturers that don't have any product in the database.
 -- ---------------------------------------------------------------------
 SELECT
-f.nombre AS 'Fabricante',
-p.nombre AS 'Producto'
+f.nombre AS 'fabricante',
+p.nombre AS 'producto'
 FROM fabricante f
 LEFT JOIN producto p ON f.codigo = p.codigo_fabricante;
 
@@ -324,7 +331,7 @@ LEFT JOIN producto p ON f.codigo = p.codigo_fabricante;
 -- that do not have any associated products appear.
 -- --------------------------------------------------------
 SELECT
-f.nombre AS 'Fabricante'
+f.nombre AS 'fabricante'
 FROM fabricante f
 LEFT JOIN producto p ON f.codigo = p.codigo_fabricante
 WHERE p.nombre IS NULL;
@@ -333,7 +340,11 @@ WHERE p.nombre IS NULL;
 -- 36. Returns all products from the manufacturer Lenovo. 
 -- (No inner JOIN).
 -- --------------------------------------------------------
-SELECT *
+SELECT
+producto.codigo,
+producto.nombre,
+producto.precio,
+producto.codigo_fabricante
 FROM producto
 WHERE codigo_fabricante = (
 SELECT codigo
@@ -345,8 +356,11 @@ WHERE nombre = 'Lenovo'
 -- 37. Returns all data of products that have the same price as the most expensive 
 -- product of the manufacturer Lenovo. (No INNER JOIN).
 -- --------------------------------------------------------------------------------
-
-SELECT *
+SELECT
+producto.codigo,
+producto.nombre,
+producto.precio,
+producto.codigo_fabricante
 FROM producto
 WHERE precio = (
 SELECT MAX(precio)
@@ -373,8 +387,7 @@ LIMIT 1;
 -- 39. List the name of the cheapest product from manufacturer 
 -- Hewlett-Packard.
 -- -----------------------------------------------------------
-SELECT producto.nombre AS 'Producto',
-producto.precio AS 'Precio'
+SELECT producto.nombre
 FROM producto
 JOIN fabricante ON codigo_fabricante = fabricante.codigo
 WHERE fabricante.nombre = 'Lenovo'
@@ -400,11 +413,18 @@ LIMIT 1
 -- 41. List all Asus products that have a higher price than the 
 -- average price of all their products.
 -- ------------------------------------------------------------
-SELECT AVG(precio) AS 'Average (€)'
+SELECT 
+producto.codigo,
+producto.nombre,
+producto.precio,
+producto.codigo_fabricante
 FROM producto
-WHERE producto.codigo_fabricante = (
-SELECT fabricante.codigo
-FROM fabricante
+JOIN fabricante ON producto.codigo_fabricante = fabricante.codigo
+WHERE fabricante.nombre = 'Asus'
+AND producto.precio > (
+SELECT AVG (producto.precio)
+FROM producto
+JOIN fabricante ON producto.codigo_fabricante = fabricante.codigo
 WHERE fabricante.nombre = 'Asus'
 );
 
