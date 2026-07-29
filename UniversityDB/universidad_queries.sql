@@ -8,7 +8,8 @@ persona.apellido1,
 persona.apellido2,
 persona.nombre
 FROM persona
-WHERE persona.tipo = 'alumno';
+WHERE persona.tipo = 'alumno'
+ORDER BY persona.apellido1 ASC;
 -- ----------------------------------------------------------------------------------------------------
 -- 2. Returns the name and two surnames of students who have not registered their phone number at the 
 -- database.
@@ -18,7 +19,10 @@ nombre,
 apellido1,
 apellido2
 FROM persona 
-WHERE telefono IS NULL;
+WHERE 
+persona.tipo = 'alumno'
+AND
+telefono IS NULL;
 
 -- -----------------------------------------------------------------------------------------
 -- 3. Returns the list of students born in 1999. (id, number, apellido1, apellido2, date)
@@ -258,7 +262,7 @@ HAVING COUNT(asignatura.id) > 40;
 SELECT
 grado.nombre AS 'grau',
 asignatura.tipo,
-SUM(asignatura.creditos) AS 'total_créditos'
+SUM(asignatura.creditos) AS 'total_creditos'
 FROM grado
 JOIN asignatura ON grado.id = asignatura.id_grado
 GROUP BY grado.nombre, asignatura.tipo;
