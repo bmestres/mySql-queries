@@ -148,13 +148,103 @@ WHERE profesor.id_departamento IS NULL;
 -- 13. Returns a list with the teachers who do not teach any subject.
 -- -----------------------------------------------------------------
 SELECT
-persona.nombre AS 'Nombre',
 persona.apellido1 AS 'Apellido 1',
-persona.apellido2 AS 'Apellido 2'
+persona.apellido2 AS 'Apellido 2',
+persona.nombre AS 'Nombre profesor'
 FROM persona
 JOIN profesor ON persona.id = profesor.id_profesor
 LEFT JOIN asignatura ON  profesor.id_profesor = asignatura.id_profesor
 WHERE asignatura.id_profesor IS NULL;
+
+-- --------------------------------------------------------------------
+-- 14. Returns a list of subjects that do not have an assigned teacher.
+-- --------------------------------------------------------------------
+SELECT
+asignatura.nombre AS 'Asignatura'
+FROM asignatura
+LEFT JOIN profesor ON asignatura.id_profesor = profesor.id_profesor
+WHERE profesor.id_profesor IS NULL;
+
+-- --------------------------------------------------------------------
+-- 15. Returns a list of all departments that have not taught subjects 
+-- in any school year.
+-- --------------------------------------------------------------------
+SELECT DISTINCT
+departamento.nombre AS 'Departamento'
+FROM departamento
+LEFT JOIN profesor ON departamento.id = profesor.id_departamento
+LEFT JOIN asignatura ON profesor.id_profesor = asignatura.id_profesor
+WHERE asignatura.id IS NULL;
+
+-- ----------------------------------------------------
+-- 16. Returns the total number of students that exist.
+-- ----------------------------------------------------
+SELECT COUNT(*) AS 'Total alumnos'
+FROM persona
+WHERE persona.tipo = 'alumno';
+
+-- ----------------------------------------------
+-- 17. Calcula quants alumnes van néixer en 1999.
+-- ----------------------------------------------
+SELECT COUNT(*) AS 'Alumnos nacidos en 1999'
+FROM persona
+WHERE
+persona.tipo = 'alumno' AND
+YEAR(persona.fecha_nacimiento) = 1999;
+
+-- --------------------------------------------------------------
+-- 18. Calculates how many teachers there are in each department.
+-- --------------------------------------------------------------
+SELECT 
+departamento.nombre AS 'Departamento',
+COUNT(profesor.id_profesor) AS 'Total profesores'
+FROM profesor
+JOIN departamento ON profesor.id_departamento = departamento.id
+GROUP BY departamento.nombre
+ORDER BY COUNT(profesor.id_profesor) DESC;
+
+-- --------------------------------------------------------------------------------
+-- 19. Returns a list of all departments and the number of teachers in each of them. 
+-- Takes into account departments that do not have associate teachers.
+-- --------------------------------------------------------------------------------
+SELECT 
+departamento.nombre AS 'Departamento',
+COUNT(profesor.id_profesor) AS 'Total profesores'
+FROM profesor
+RIGHT JOIN departamento ON profesor.id_departamento = departamento.id
+GROUP BY departamento.nombre
+ORDER BY COUNT(profesor.id_profesor) DESC;
+
+-- ---------------------------------------------------------------------------------------
+-- 20. Returns a list with the name of all existing degrees in the database and the number 
+-- of subjects each has. Keep in mind that there may be degrees that do not have associated 
+-- subjects.
+-- ---------------------------------------------------------------------------------------
+SELECT
+grado.nombre AS 'Grado',
+COUNT(asignatura.id) AS 'Total asignaturas (↓)'
+FROM grado
+LEFT JOIN asignatura ON grado.id = asignatura.id_grado
+GROUP BY grado.nombre
+ORDER BY COUNT(asignatura.id) DESC;
+
+-- -------------------------------------------------------------------------------------------
+-- 21. Returns a list with the name of all the existing degrees in the database and the number 
+-- of subjects that each one has, of the degrees that have more than 40 associated subjects.
+-- -------------------------------------------------------------------------------------------
+SELECT
+grado.nombre AS 'Grado',
+COUNT(asignatura.id) AS 'Total asignaturas'
+FROM grado
+JOIN asignatura ON grado.id = asignatura.id_grado
+GROUP BY grado.nombre
+HAVING COUNT(asignatura.id) > 40;
+
+-- -------------------------------------------------------------------------------------------
+-- 22. Returns a list that shows the name of the degrees and the sum of the total number of 
+-- credits that exist for each type of subject. 
+-- -------------------------------------------------------------------------------------------
+
 
 
 
