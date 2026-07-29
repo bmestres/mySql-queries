@@ -309,7 +309,8 @@ p.precio,
 f.nombre AS 'fabricante'
 FROM producto p
 JOIN fabricante f ON codigo_fabricante = f.codigo
-WHERE precio >= 180;
+WHERE precio >= 180
+ORDER BY p.precio DESC, p.nombre ASC;
 
 -- ---------------------------------------------------------------------
 -- 33. Returns a list with the code and name of manufacturer, only those 
