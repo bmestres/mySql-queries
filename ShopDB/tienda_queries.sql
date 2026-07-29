@@ -2,21 +2,23 @@ USE tienda;
 -- -----------------------------------------------------------------
 -- 1. List the name of all products that exist in the product table.
 -- -----------------------------------------------------------------
-SELECT producto.nombre AS Nombre 
+SELECT producto.nombre
 FROM producto;
 -- -----------------------------------------------------------------
 -- 2. List the name and prices of all products in the product table.
 -- -----------------------------------------------------------------
 SELECT 
-producto.nombre AS Nombre,
-producto.precio AS Precio
+producto.nombre,
+producto.precio
 FROM producto;
 -- ----------------------------------------------
 -- 3. List all the columns of the product table.
 -- ----------------------------------------------
 SELECT 
+producto.codigo,
 producto.nombre,
-producto.precio
+producto.precio,
+producto.codigo_fabricante
 FROM producto;
 -- -----------------------------------------------------------------
 -- 4. List the name of the products, the price in euros and the  
@@ -42,7 +44,7 @@ FROM producto;
 -- -----------------------------------------------------------------
 SELECT 
 UPPER
-(producto.nombre),
+(producto.nombre) AS 'nombre',
 producto.precio
 FROM producto;
 -- -----------------------------------------------------------------
@@ -51,7 +53,7 @@ FROM producto;
 -- -----------------------------------------------------------------
 SELECT 
 LOWER
-(producto.nombre),
+(producto.nombre) AS 'nombre',
 producto.precio
 FROM producto;
 -- -----------------------------------------------------------------
@@ -66,29 +68,30 @@ FROM fabricante;
 -- 9. List product names and prices, rounding the price value.
 -- -----------------------------------------------------------------
 SELECT nombre,
-ROUND(precio, 0)
+ROUND(precio, 0) AS 'precio'
 FROM producto;
 -- -----------------------------------------------------------------
 -- 10. Lists the names and prices of all products  in the product 
 -- table, truncating the price value to show it without any decimal 
 -- digits.
 -- -----------------------------------------------------------------
-SELECT nombre as Nombre,
+SELECT nombre,
 TRUNCATE(precio, 0) AS 'precio truncado'
 FROM producto;
 -- -----------------------------------------------------------------
 -- 11. Displays a list of the manufacturer codes that appear in the 
 -- product table, including possible repetitions.
 -- -----------------------------------------------------------------
-SELECT fabricante.codigo AS 'codigo_fabricante'
-FROM fabricante
-ORDER BY fabricante.codigo;
+SELECT codigo_fabricante AS 'codigo_fabricante'
+FROM producto
+ORDER BY codigo_fabricante;
 -- -----------------------------------------------------------------
 -- 12. Lists the code of manufacturers who have products in the 
 -- product table, eliminating repeated codes.
 -- -----------------------------------------------------------------
-SELECT DISTINCT codigo AS 'código_fabricante'
-FROM producto;
+SELECT DISTINCT codigo_fabricante AS 'codigo_fabricante'
+FROM producto
+ORDER BY codigo_fabricante;
 -- --------------------------------------------------
 -- 13. List names of manufacturers in ascending order
 -- --------------------------------------------------
@@ -107,8 +110,8 @@ ORDER BY nombre DESC;
 -- order.
 -- ------------------------------------------------------------
 SELECT 
-nombre
-precio
+producto.nombre,
+producto.precio
 FROM producto
 ORDER BY 
 nombre ASC, 
@@ -145,10 +148,10 @@ LIMIT 1;
 -- 19. List the name and price of the most expensive product. 
 -- (Uses only the ORDER BY and LIMIT clauses).
 -- ----------------------------------------------------------
-SELECT nombre
-precio
+SELECT producto.nombre,
+producto.precio
 FROM producto
-ORDER BY precio DESC
+ORDER BY producto.precio DESC
 LIMIT 1;
 -- -----------------------------------------------------------
 -- 20. List the name of all products of the manufacturer whose 
@@ -161,7 +164,7 @@ WHERE codigo_fabricante = 2;
 -- 21. Returns a list with the product name, price and manufacturer 
 -- name of all products in the database.
 -- ------------------------------------------------------------------
-SELECT producto.nombre
+SELECT producto.nombre,
 precio,
 fabricante.nombre AS 'nombre del fabricante'
 FROM producto
@@ -177,7 +180,7 @@ producto.precio,
 fabricante.nombre AS 'nombre del fabricante'
 FROM producto
 JOIN fabricante ON codigo_fabricante = fabricante.codigo
-ORDER BY producto.nombre;
+ORDER BY fabricante.nombre;
 -- --------------------------------------------------------------------
 -- 23. Returns a list with the product code, product name, manufacturer 
 -- code and manufacturer name (manager number), of all  products in 
@@ -233,10 +236,13 @@ WHERE f.nombre = 'Lenovo';
 -- manufacturer Crucial that have a price greater than 200€
 -- --------------------------------------------------------------
 SELECT 
-nombre,
-precio
+producto.nombre,
+producto.precio
 FROM producto
-WHERE precio > 200;
+JOIN fabricante ON producto.codigo_fabricante = fabricante.codigo
+WHERE 
+fabricante.nombre = 'Crucial' AND
+precio > 200;
 
 -- ---------------------------------------------------------------
 -- 28. Returns a list with name, price and manufacturer name of all 
@@ -303,7 +309,7 @@ p.precio,
 f.nombre AS 'fabricante'
 FROM producto p
 JOIN fabricante f ON codigo_fabricante = f.codigo
-WHERE precio >= 180;
+WHERE precio > 180;
 
 -- ---------------------------------------------------------------------
 -- 33. Returns a list with the code and name of manufacturer, only those 
@@ -375,8 +381,7 @@ WHERE nombre = 'Lenovo'
 -- -------------------------------------------------------------------------
 -- 38. List the name of the most expensive product from manufacturer Lenovo.
 -- -------------------------------------------------------------------------
-SELECT producto.nombre AS 'Producto',
-producto.precio AS 'Precio'
+SELECT producto.nombre
 FROM producto
 JOIN fabricante ON codigo_fabricante = fabricante.codigo
 WHERE fabricante.nombre = 'Lenovo'
@@ -390,7 +395,7 @@ LIMIT 1;
 SELECT producto.nombre
 FROM producto
 JOIN fabricante ON codigo_fabricante = fabricante.codigo
-WHERE fabricante.nombre = 'Lenovo'
+WHERE fabricante.nombre = 'Hewlett-Packard'
 ORDER BY producto.precio ASC
 LIMIT 1;
 -- ---------------------------------------------------------------
@@ -398,9 +403,12 @@ LIMIT 1;
 -- equal price to the most expensive product of the manufacturer 
 -- Lenovo.
 -- ---------------------------------------------------------------
-SELECT producto.nombre AS 'Producto'
+SELECT 
+producto.codigo,
+producto.nombre,
+producto.codigo_fabricante
 FROM producto
-WHERE precio >= (
+WHERE precio > (
 SELECT producto.precio
 FROM producto
 JOIN fabricante ON codigo_fabricante = fabricante.codigo
