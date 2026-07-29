@@ -240,10 +240,86 @@ JOIN asignatura ON grado.id = asignatura.id_grado
 GROUP BY grado.nombre
 HAVING COUNT(asignatura.id) > 40;
 
--- -------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------
 -- 22. Returns a list that shows the name of the degrees and the sum of the total number of 
 -- credits that exist for each type of subject. 
--- -------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------
+SELECT
+grado.nombre AS 'Grado',
+asignatura.tipo AS 'Tipo asignatura',
+SUM(asignatura.creditos) AS 'Total créditos'
+FROM grado
+JOIN asignatura ON grado.id = asignatura.id_grado
+GROUP BY grado.nombre, asignatura.tipo;
+
+-- ----------------------------------------------------------------------------------
+-- 23. Returns a list that shows how many students have enrolled in a subject in each 
+-- of the school years. 
+-- ----------------------------------------------------------------------------------
+SELECT
+curso_escolar.anyo_inicio AS 'Año inicio curso',
+curso_escolar.anyo_fin AS 'Año fin curso',
+asignatura.nombre AS 'Asignatura',
+COUNT(persona.id) AS 'Alumnos'
+FROM persona
+JOIN alumno_se_matricula_asignatura ON persona.id = alumno_se_matricula_asignatura.id_alumno
+JOIN curso_escolar ON  alumno_se_matricula_asignatura.id_curso_escolar = curso_escolar.id
+JOIN asignatura ON alumno_se_matricula_asignatura.id_asignatura = asignatura.id
+GROUP BY curso_escolar.id, asignatura.id;
+
+-- --------------------------------------------------------------------
+-- 24. Returns a list of the number of subjects taught by each teacher.
+-- --------------------------------------------------------------------
+SELECT
+persona.id AS 'ID Profesor',
+persona.nombre AS 'Nombre',
+persona.apellido1 AS 'Primer apellido',
+persona.apellido2 AS 'Segundo apellido',
+COUNT(asignatura.id) AS 'Total asignaturas'
+FROM persona
+JOIN profesor ON persona.id = profesor.id_profesor
+LEFT JOIN asignatura ON profesor.id_profesor = asignatura.id_profesor
+GROUP BY
+persona.id,
+persona.nombre,
+persona.apellido1,
+persona.apellido2
+ORDER BY persona.id;
+
+-- ---------------------------------------------
+-- 25. Returns all data of the youngest student.
+-- ---------------------------------------------
+SELECT *
+FROM persona
+WHERE persona.tipo = 'alumno' 
+ORDER BY YEAR (persona.fecha_nacimiento) DESC
+LIMIT 1;
+
+-- ----------------------------------------------------------------------
+-- 26. Returns a list with the teachers who have an associated department 
+-- and do not teach any subject.
+-- ----------------------------------------------------------------------
+SELECT
+persona.apellido1,
+persona.apellido2,
+persona.nombre
+FROM persona
+LEFT JOIN profesor ON persona.id = profesor.id_profesor
+LEFT JOIN asignatura ON profesor.id_profesor = asignatura.id_profesor
+WHERE persona.tipo = 'profesor'
+AND
+asignatura.id IS NULL;
+
+
+
+
+
+
+
+
+
+
+
 
 
 
