@@ -33,7 +33,7 @@ persona.nombre,
 persona.apellido1,
 persona.apellido2,
 fecha_nacimiento
-FROM persona1
+FROM persona
 WHERE YEAR(fecha_nacimiento) = 1999;
 
 -- ---------------------------------------------------------------------------------
@@ -190,8 +190,9 @@ departamento.nombre
 FROM departamento
 LEFT JOIN profesor ON departamento.id = profesor.id_departamento
 LEFT JOIN asignatura ON profesor.id_profesor = asignatura.id_profesor
-WHERE asignatura.id IS NULL
-GROUP BY departamento.nombre;
+LEFT JOIN alumno_se_matricula_asignatura am ON asignatura.id = am.id_asignatura
+LEFT JOIN curso_escolar ON am.id_curso_escolar = curso_escolar.id
+WHERE curso_escolar.id IS NULL;
 
 -- ----------------------------------------------------
 -- 16. Returns the total number of students that exist.
